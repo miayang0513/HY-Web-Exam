@@ -1,14 +1,25 @@
 <template>
-  <video-player
-    id="video-player"
-    class="w-screen h-full object-cover"
-    :sources="sources"
-    :options="playerOptions"
-    :height="playerOptions.height"
-    @mounted="handleMounted"
-  >
-  </video-player>
-  <button @click="next">Next</button>
+  <div class="relative h-full">
+    <video-player
+      id="video-player"
+      class="w-screen h-full"
+      :sources="sources"
+      :muted="config.muted"
+      :loop="config.loop"
+      :autoplay="config.autoplay"
+      :playsinline="config.playsinline"
+      @mounted="handleMounted"
+    >
+    </video-player>
+    <button
+      v-if="config.muted"
+      class="absolute px-4 py-2 rounded bg-white left-5 top-20"
+      @click="toggleMuted"
+    >
+      Unmute
+    </button>
+    <!-- <button @click="next">Next</button> -->
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -18,6 +29,13 @@ import { ref, computed } from 'vue'
 import { VideoJsPlayer } from 'video.js'
 import { VideoPlayerProps, VideoPlayerState } from '@videojs-player/vue'
 
+const config = ref<VideoPlayerProps>({
+  loop: true,
+  autoplay: true,
+  muted: true,
+  playsinline: true,
+})
+
 const videos = [
   'http://192.168.1.214:3000/media/Rolls_Royce_Ghost.m3u8',
   'http://192.168.1.214:3000/media/Toyota_Camry_XV70.m3u8',
@@ -25,15 +43,6 @@ const videos = [
   // 'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8',
 ]
 const currentVideoIndex = ref(0)
-
-const playerOptions = ref<VideoPlayerProps>({
-  loop: true,
-  autoplay: true,
-  muted: true,
-  playsinline: true,
-  height: 869,
-})
-
 const sources = computed(() => [
   {
     type: 'application/x-mpegURL',
@@ -46,6 +55,10 @@ const state = ref<VideoPlayerState>()
 const handleMounted = async (payload: any) => {
   player.value = payload.player
   state.value = payload.state
+}
+
+const toggleMuted = () => {
+  config.value.muted = !config.value.muted
 }
 
 const next = () => {
