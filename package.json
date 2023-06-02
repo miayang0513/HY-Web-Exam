@@ -9,7 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@videojs-player/vue": "^1.0.0",
     "axios": "^1.4.0",
+    "video.js": "7.20.1",
     "vue": "^3.2.47"
   },
   "devDependencies": {
