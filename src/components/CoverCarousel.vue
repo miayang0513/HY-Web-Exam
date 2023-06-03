@@ -10,22 +10,16 @@
       @touchend="onTouchEnd"
     >
       <div
-        class="w-screen border-8 border-red-600"
+        v-for="cover in coverList"
+        :key="cover"
+        class="w-screen"
         :style="{ height: height + 'px' }"
       >
-        1
-      </div>
-      <div
-        class="w-screen border-8 border-red-600"
-        :style="{ height: height + 'px' }"
-      >
-        2
-      </div>
-      <div
-        class="w-screen border-8 border-red-600"
-        :style="{ height: height + 'px' }"
-      >
-        3
+        <img
+          :src="cover"
+          class="w-full h-full object-cover"
+          :class="{ hidden: !isSwiping }"
+        />
       </div>
     </div>
   </div>
@@ -36,7 +30,7 @@ import { ref } from 'vue'
 
 const props = defineProps<{
   currentIndex: number
-  coverList: string[] | undefined
+  coverList: string[]
   height: number
 }>()
 
@@ -44,11 +38,14 @@ const emit = defineEmits<{
   (e: 'update:currentIndex', index: number): void
 }>()
 
+const isSwiping = ref(false)
+
 const startY = ref<number | null>(null)
 const tempY = ref<number | null>(null)
 const currentY = ref(0)
 
 const onTouchStart = (event: TouchEvent) => {
+  isSwiping.value = true
   const touch = event.touches[0]
   startY.value = touch.clientY
   tempY.value = touch.clientY
@@ -72,6 +69,7 @@ const onTouchMove = (event: TouchEvent) => {
 }
 
 const onTouchEnd = () => {
+  isSwiping.value = false
   if (!startY.value || !tempY.value) return
 
   const deltaY = tempY.value - startY.value

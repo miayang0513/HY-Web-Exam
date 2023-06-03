@@ -1,6 +1,7 @@
 <template>
-  <div v-if="!isLoading" class="relative">
+  <div v-if="!isFetchingData" class="relative">
     <cover-carousel
+      v-if="coverList.length > 0"
       class="relative z-10"
       :height="appHeight"
       v-model:currentIndex="currentIndex"
@@ -56,17 +57,19 @@ interface Video {
   play_url: string
 }
 
-const isLoading = ref(false)
+const isFetchingData = ref(false)
 const videoList = ref<Video[]>()
-const coverList = computed(() => videoList.value?.map((video) => video.cover))
+const coverList = computed(
+  () => videoList.value?.map((video) => video.cover) || []
+)
 onBeforeMount(async () => {
-  isLoading.value = true
+  isFetchingData.value = true
   /**
    * @todo: error handler
    */
   const { data } = await axios.get('/for_you_list')
   videoList.value = data.items
-  isLoading.value = false
+  isFetchingData.value = false
 })
 
 const config = ref<VideoPlayerProps>({
@@ -109,13 +112,11 @@ const toggleMuted = () => {
 html,
 body,
 #app {
-  padding: 0;
-  margin: 0;
-  height: 100vh; /* fallback for Js load */
+  @apply p-0 m-0 h-screen;
   height: var(--doc-height);
 }
 
 #video-player > video {
-  object-fit: cover;
+  @apply object-cover;
 }
 </style>
