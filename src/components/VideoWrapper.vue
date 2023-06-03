@@ -9,6 +9,7 @@
       :coverList="coverList"
     />
     <video-player
+      ref="refVideoPlayer"
       id="video-player"
       class="absolute z-0 top-0 left-0 w-screen"
       :sources="sources"
@@ -33,6 +34,11 @@
             :state="state"
           />
         </teleport>
+        <div class="absolute bottom-5 w-1/2 overflow-hidden">
+          <div class="whitespace-nowrap flex items-center gap-x-2 animation-marquee">
+            <span v-for=" in 10">{{ videoList[currentIndex].title }}</span>
+          </div>
+        </div>
       </template>
     </video-player>
     <button
@@ -46,9 +52,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, inject, computed, Ref, onActivated } from 'vue'
+import { ref, inject, computed, Ref, onActivated, onMounted } from 'vue'
 import { VideoJsPlayer } from 'video.js'
-import { VideoPlayerProps, VideoPlayerState } from '@videojs-player/vue'
+import { VideoPlayer, VideoPlayerProps, VideoPlayerState } from '@videojs-player/vue'
 import CoverCarousel from '@/components/CoverCarousel.vue'
 import ProgressBar from '@/components/ProgressBar.vue'
 
@@ -87,10 +93,8 @@ const sources = computed(() => [
 ])
 
 const player = ref<VideoJsPlayer>()
-const state = ref<VideoPlayerState>()
 const handleMounted = async (payload: any) => {
   player.value = payload.player
-  state.value = payload.state
 }
 
 const toggleMuted = () => {
@@ -99,6 +103,19 @@ const toggleMuted = () => {
 
 const refCoverCarousel = ref<typeof CoverCarousel>()
 const isSwiping = computed(() => refCoverCarousel.value?.isSwiping || false)
+
+const refVideoPlayer = ref<typeof VideoPlayer>()
+
+onMounted(() => {
+  setTimeout(() => {
+    /**
+     * @magic 待釐清
+     * Object-fit: fill does not work on safari for autoplay videos
+     * 延遲設定即可解決
+     */
+    refVideoPlayer.value && (refVideoPlayer.value.$el.querySelector('video').style.objectFit = 'fill')
+  }, 100)
+})
 
 onActivated(() => {
   // 在 onMounted 的時候也會被呼叫，所以要確保 player.value 有值 (表示 handleMounted 被呼叫過) 之後才去執行 play()
@@ -109,5 +126,18 @@ onActivated(() => {
 <style>
 #video-player > video {
   @apply object-cover;
+}
+
+.animation-marquee {
+  animation: marquee 4s linear infinite;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
 }
 </style>

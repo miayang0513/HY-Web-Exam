@@ -44,8 +44,9 @@
   - [x] MB Chrome
   - [x] MB Safari
 
-- [ ] Play next video after finish current one
-  - [ ] PC Chrome
-  - [ ] PC Safari
-  - [ ] MB Chrome
-  - [ ] MB Safari
+- [x] Show title crawl
+
+  - [x] PC Chrome
+  - [x] PC Safari
+  - [x] MB Chrome
+  - [x] MB Safari

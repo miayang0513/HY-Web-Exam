@@ -13,6 +13,10 @@
       <component :is="Component" />
     </keep-alive>
   </router-view>
+  <nav class="w-full h-8 grid grid-cols-2 items-center bg-black justify-items-center">
+    <div class="text-sm text-white">Home</div>
+    <div class="text-sm text-neutral-600">Discover</div>
+  </nav>
 </template>
 
 <script setup lang="ts">
@@ -24,13 +28,14 @@ import { ref, provide } from 'vue'
  *
  * 參考：https://dev.to/nirazanbasnet/dont-use-100vh-for-mobile-responsive-3o97
  */
-const appHeight = ref(896) // iPhone XR Height
+const BOTTOM_BAR_HEIGHT = 32
+const appHeight = ref(896 - BOTTOM_BAR_HEIGHT) // iPhone XR Height
 provide('appHeight', appHeight)
 
 const documentHeight = () => {
   const doc = document.documentElement
-  appHeight.value = window.innerHeight
-  doc.style.setProperty('--doc-height', `${appHeight.value}px`)
+  appHeight.value = window.innerHeight - BOTTOM_BAR_HEIGHT
+  doc.style.setProperty('--doc-height', `${window.innerHeight}px`)
 }
 window.addEventListener('resize', documentHeight)
 documentHeight()
