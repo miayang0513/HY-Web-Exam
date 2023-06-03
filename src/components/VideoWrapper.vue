@@ -4,17 +4,15 @@
       ref="refCoverCarousel"
       v-if="coverList.length > 0"
       class="relative z-10"
-      :height="appHeight"
       v-model:currentIndex="currentIndex"
       :coverList="coverList"
     />
     <video-player
       ref="refVideoPlayer"
       id="video-player"
-      class="absolute z-0 top-0 left-0 w-screen"
+      class="absolute z-0 top-0 left-0 w-screen h-full"
       :sources="sources"
       :muted="config.muted"
-      :height="appHeight"
       :loop="config.loop"
       :autoplay="config.autoplay"
       :playsinline="config.playsinline"
@@ -52,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, inject, computed, Ref, onActivated, onMounted } from 'vue'
+import { ref, computed, onActivated, onMounted } from 'vue'
 import { VideoJsPlayer } from 'video.js'
 import { VideoPlayer, VideoPlayerProps, VideoPlayerState } from '@videojs-player/vue'
 import CoverCarousel from '@/components/CoverCarousel.vue'
@@ -67,8 +65,6 @@ export interface Video {
 const props = defineProps<{
   videoList: Video[]
 }>()
-
-const appHeight = inject<Ref<number>>('appHeight', ref(896))
 
 const coverList = computed(() => props.videoList?.map((video) => video.cover) || [])
 
@@ -102,7 +98,7 @@ const toggleMuted = () => {
 }
 
 const refCoverCarousel = ref<typeof CoverCarousel>()
-const isSwiping = computed(() => refCoverCarousel.value?.isSwiping || false)
+const isSwiping = computed<boolean>(() => refCoverCarousel.value?.isSwiping || false)
 
 const refVideoPlayer = ref<typeof VideoPlayer>()
 

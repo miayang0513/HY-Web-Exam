@@ -16,6 +16,11 @@ const router = createRouter({
       component: () => import('@/views/PageFollowing.vue'),
     },
     {
+      path: '/error',
+      name: 'Error',
+      component: () => import('@/views/PageError.vue'),
+    },
+    {
       path: '/:catchAll(.*)',
       redirect: '/foryou',
     },

@@ -7,4 +7,8 @@ import router from './router'
 
 const app = createApp(App)
 
+app.config.errorHandler = () => {
+  router.push('/')
+}
+
 app.use(router).use(VueVideoPlayer).mount('#app')

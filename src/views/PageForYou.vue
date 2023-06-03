@@ -13,11 +13,13 @@ const videoList = ref<Video[]>([])
 
 onBeforeMount(async () => {
   isFetchingData.value = true
-  /**
-   * @todo: error handler
-   */
-  const { data } = await axios.get('/for_you_list')
-  videoList.value = data.items
-  isFetchingData.value = false
+
+  try {
+    const { data } = await axios.get('/for_you_list')
+    videoList.value = data.items
+    isFetchingData.value = false
+  } catch {
+    // redirect to /error
+  }
 })
 </script>

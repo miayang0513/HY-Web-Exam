@@ -1,5 +1,5 @@
 <template>
-  <div class="overflow-hidden" :style="{ height: height + 'px' }">
+  <div class="overflow-hidden" :style="{ height: mainHeight + 'px' }">
     <div
       class="h-full"
       :style="{
@@ -9,35 +9,26 @@
       @touchmove.prevent="onTouchMove"
       @touchend="onTouchEnd"
     >
-      <div
-        v-for="cover in coverList"
-        :key="cover"
-        class="w-screen"
-        :style="{ height: height + 'px' }"
-      >
-        <img
-          :src="cover"
-          class="w-full h-full object-cover"
-          :class="{ hidden: !isSwiping }"
-        />
+      <div v-for="cover in coverList" :key="cover" class="w-screen" :style="{ height: mainHeight + 'px' }">
+        <img :src="cover" class="w-full h-full object-cover" :class="{ hidden: !isSwiping }" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, Ref, inject } from 'vue'
 
 const props = defineProps<{
   currentIndex: number
   coverList: string[]
-  height: number
 }>()
 
 const emit = defineEmits<{
   (e: 'update:currentIndex', index: number): void
 }>()
 
+const mainHeight = inject<Ref<number>>('mainHeight', ref(896))
 const isSwiping = ref(false)
 
 defineExpose({
@@ -58,7 +49,7 @@ const onTouchMove = (event: TouchEvent) => {
   isSwiping.value = true
   if (!startY.value || !tempY.value) return
 
-  const { currentIndex, coverList, height } = props
+  const { currentIndex, coverList } = props
   const touch = event.touches[0]
   const deltaY = touch.clientY - startY.value
 
@@ -69,7 +60,7 @@ const onTouchMove = (event: TouchEvent) => {
   if (deltaY < 0 && currentIndex === coverList.length - 1) return
 
   tempY.value = touch.clientY
-  currentY.value = deltaY - currentIndex * height
+  currentY.value = deltaY - currentIndex * mainHeight.value
 }
 
 const onTouchEnd = () => {
@@ -82,7 +73,7 @@ const onTouchEnd = () => {
     return
   }
 
-  const halfScreenHeight = props.height / 2
+  const halfScreenHeight = mainHeight.value / 2
   let currentIndex = props.currentIndex
 
   if (deltaY > 0 && Math.abs(deltaY) >= halfScreenHeight) {
@@ -93,7 +84,7 @@ const onTouchEnd = () => {
     currentIndex++
   }
 
-  currentY.value = -(currentIndex * props.height)
+  currentY.value = -(currentIndex * mainHeight.value)
   emit('update:currentIndex', currentIndex)
 
   startY.value = null

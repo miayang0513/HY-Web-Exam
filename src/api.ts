@@ -1,11 +1,22 @@
 import Axios from 'axios'
+import router from '@/router'
 
 const options = {
-  baseURL: 'http://192.168.1.214:3000',
+  baseURL: import.meta.env.VITE_APP_API_ENDPOINT,
   headers: {
     'Content-Type': 'application/json',
   },
   timeout: 30000,
 }
 
-export default Axios.create(options)
+const instance = Axios.create(options)
+
+instance.interceptors.response.use(
+  (response) => response,
+  () => {
+    router.push('/error')
+    return Promise.reject()
+  }
+)
+
+export default instance
