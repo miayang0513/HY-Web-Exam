@@ -9,19 +9,19 @@
   - [x] MB Chrome
   - [x] MB Safari
 
-- [ ] Unmute
+- [x] Unmute
 
-  - [ ] PC Chrome
-  - [ ] PC Safari
-  - [ ] MB Chrome
-  - [ ] MB Safari
+  - [x] PC Chrome
+  - [x] PC Safari
+  - [x] MB Chrome
+  - [x] MB Safari
 
-- [ ] Swipe the screen to switch the video
+- [x] Swipe the screen to switch the video
 
-  - [ ] PC Chrome
-  - [ ] PC Safari
-  - [ ] MB Chrome
-  - [ ] MB Safari
+  - [x] PC Chrome
+  - [ ] PC Safari (電腦版的 Safari 無法模擬觸控行為)
+  - [x] MB Chrome
+  - [x] MB Safari
 
 - [ ] Transition cover between switching videos
 

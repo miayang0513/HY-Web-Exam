@@ -1,10 +1,17 @@
 <template>
-  <div class="relative h-full">
+  <div v-if="!isLoading" class="relative">
+    <cover-carousel
+      class="relative z-10"
+      :height="appHeight"
+      v-model:currentIndex="currentIndex"
+      :coverList="coverList"
+    />
     <video-player
       id="video-player"
-      class="w-screen h-full"
+      class="absolute z-0 top-0 left-0 w-screen"
       :sources="sources"
       :muted="config.muted"
+      :height="appHeight"
       :loop="config.loop"
       :autoplay="config.autoplay"
       :playsinline="config.playsinline"
@@ -13,21 +20,54 @@
     </video-player>
     <button
       v-if="config.muted"
-      class="absolute px-4 py-2 rounded bg-white left-5 top-20"
+      class="absolute z-20 px-4 py-2 rounded bg-white left-5 top-20"
       @click="toggleMuted"
     >
       Unmute
     </button>
-    <!-- <button @click="next">Next</button> -->
   </div>
 </template>
 
 <script setup lang="ts">
-// import axios from '@/api'
-// axios.get('/for_you_list')
-import { ref, computed } from 'vue'
+import axios from '@/api'
+import { ref, computed, onBeforeMount } from 'vue'
 import { VideoJsPlayer } from 'video.js'
 import { VideoPlayerProps, VideoPlayerState } from '@videojs-player/vue'
+import CoverCarousel from '@/components/CoverCarousel.vue'
+
+/**
+ * 因為在手機版的 Chrome 和 Safari 上下會有 Address 等原生介面佔據空間，
+ * 所以無法直接使用 100vh 來設定介面的高度
+ *
+ * 參考：https://dev.to/nirazanbasnet/dont-use-100vh-for-mobile-responsive-3o97
+ */
+const appHeight = ref(896) // iPhone XR Height
+const documentHeight = () => {
+  const doc = document.documentElement
+  appHeight.value = window.innerHeight
+  doc.style.setProperty('--doc-height', `${appHeight.value}px`)
+}
+window.addEventListener('resize', documentHeight)
+documentHeight()
+
+interface Video {
+  title: string
+  cover: string
+  play_url: string
+}
+
+const isLoading = ref(false)
+const videoList = ref<Video[]>()
+const coverList = computed(() => videoList.value?.map((video) => video.cover))
+onBeforeMount(async () => {
+  isLoading.value = true
+  /**
+   * @todo: error handler
+   */
+  const { data } = await axios.get('/for_you_list')
+  videoList.value = data.items
+  isLoading.value = false
+})
 
 const config = ref<VideoPlayerProps>({
   loop: true,
@@ -36,17 +76,16 @@ const config = ref<VideoPlayerProps>({
   playsinline: true,
 })
 
-const videos = [
-  'http://192.168.1.214:3000/media/Rolls_Royce_Ghost.m3u8',
-  'http://192.168.1.214:3000/media/Toyota_Camry_XV70.m3u8',
-  'http://192.168.1.214:3000/media/Volkswagen_Golf_7.m3u8',
-  // 'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8',
-]
-const currentVideoIndex = ref(0)
+const currentIndex = ref(0)
 const sources = computed(() => [
+  /**
+   * @todo: placeholder handler
+   */
   {
     type: 'application/x-mpegURL',
-    src: videos[currentVideoIndex.value],
+    src: videoList.value
+      ? videoList.value[currentIndex.value].play_url
+      : 'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8',
   },
 ])
 
@@ -60,23 +99,6 @@ const handleMounted = async (payload: any) => {
 const toggleMuted = () => {
   config.value.muted = !config.value.muted
 }
-
-const next = () => {
-  currentVideoIndex.value++
-}
-
-/**
- * 因為在手機版的 Chrome 和 Safari 上下會有 Address 等原生介面佔據空間，
- * 所以無法直接使用 100vh 來設定介面的高度
- *
- * 參考：https://dev.to/nirazanbasnet/dont-use-100vh-for-mobile-responsive-3o97
- */
-const documentHeight = () => {
-  const doc = document.documentElement
-  doc.style.setProperty('--doc-height', `${window.innerHeight}px`)
-}
-window.addEventListener('resize', documentHeight)
-documentHeight()
 </script>
 
 <style>
