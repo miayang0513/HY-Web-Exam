@@ -40,18 +40,22 @@ const emit = defineEmits<{
 
 const isSwiping = ref(false)
 
+defineExpose({
+  isSwiping,
+})
+
 const startY = ref<number | null>(null)
 const tempY = ref<number | null>(null)
 const currentY = ref(0)
 
 const onTouchStart = (event: TouchEvent) => {
-  isSwiping.value = true
   const touch = event.touches[0]
   startY.value = touch.clientY
   tempY.value = touch.clientY
 }
 
 const onTouchMove = (event: TouchEvent) => {
+  isSwiping.value = true
   if (!startY.value || !tempY.value) return
 
   const { currentIndex, coverList, height } = props

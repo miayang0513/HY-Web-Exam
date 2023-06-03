@@ -19,23 +19,23 @@
 - [x] Swipe the screen to switch the video
 
   - [x] PC Chrome
-  - [ ] PC Safari (電腦版的 Safari 無法模擬觸控行為)
+  - [ ] PC Safari (電腦版 Safari 的 RWD Mode 無法模擬觸控行為)
   - [x] MB Chrome
   - [x] MB Safari
 
 - [x] Transition cover between switching videos
 
   - [x] PC Chrome
-  - [ ] PC Safari (電腦版的 Safari 無法模擬觸控行為)
+  - [ ] PC Safari (電腦版 Safari 的 RWD Mode 無法模擬觸控行為)
   - [x] MB Chrome
   - [x] MB Safari
 
-- [ ] Able to adjust progress of video by user
+- [x] Able to adjust progress of video by user
 
-  - [ ] PC Chrome
-  - [ ] PC Safari
-  - [ ] MB Chrome
-  - [ ] MB Safari
+  - [x] PC Chrome
+  - [x] PC Safari
+  - [x] MB Chrome
+  - [x] MB Safari
 
 - [ ] Switch the pages between `following` and `for you`, and keep the same progress.
 
