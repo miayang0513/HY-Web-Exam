@@ -37,12 +37,12 @@
   - [x] MB Chrome
   - [x] MB Safari
 
-- [ ] Switch the pages between `following` and `for you`, and keep the same progress.
+- [x] Switch the pages between `following` and `for you`, and keep the same progress.
 
-  - [ ] PC Chrome
-  - [ ] PC Safari
-  - [ ] MB Chrome
-  - [ ] MB Safari
+  - [x] PC Chrome
+  - [x] PC Safari
+  - [x] MB Chrome
+  - [x] MB Safari
 
 - [ ] Play next video after finish current one
   - [ ] PC Chrome
