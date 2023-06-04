@@ -42,7 +42,6 @@ const documentHeight = () => {
   mainHeight.value = window.innerHeight - BOTTOM_BAR_HEIGHT
   doc.style.setProperty('--doc-height', `${window.innerHeight}px`)
 }
-window.addEventListener('resize', documentHeight)
 documentHeight()
 
 const activeClass = 'text-white font-bold underline underline-offset-8 decoration-black'

@@ -11,3 +11,5 @@
 | Adjust progress of video by user                                               |     ✓     |                         ✓                         |       ✓       |       ✓       |
 | Switch the pages between `following` and `for you`, and keep the same progress |     ✓     |                         ✓                         |       ✓       |       ✓       |
 | Show title crawl                                                               |     ✓     |                         ✓                         |       ✓       |       ✓       |
+| Share to social media (Twitter & Whatsapp)                                     |     ✓     |                         ✓                         |       ✓       |       ✓       |
+| Copy share link                                                                |     ✓     |                         ✓                         |       ✓       |       ✓       |

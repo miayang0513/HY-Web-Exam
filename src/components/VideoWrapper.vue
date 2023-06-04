@@ -36,13 +36,27 @@
             :player="player"
             :state="state"
           />
-          <button
+          <font-awesome-icon
+            icon="fa-solid fa-share"
+            class="absolute bottom-8 z-progress-bar right-4 w-6 h-6 text-white"
+            @click="isShowSharePanel = true"
+          />
+          <font-awesome-icon
             v-if="hasEverPlayed && !state.playing"
-            class="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 px-4 py-2 rounded bg-white shadow-lg"
-          >
-            {{ '▶️ Play' }}
+            icon="fa-solid fa-play"
+            class="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 text-white w-16 h-16"
+          />
+          <button v-if="state.muted" class="absolute px-4 py-2 rounded bg-white left-5 top-20 shadow-lg">
+            <font-awesome-icon icon="fa-solid fa-volume-xmark" class="text-black" />
+            Unmute
           </button>
-          <button v-if="state.muted" class="absolute px-4 py-2 rounded bg-white left-5 top-20 shadow-lg">Unmute</button>
+        </teleport>
+        <teleport to="#app">
+          <share-panel
+            v-if="isShowSharePanel"
+            :video="videoList[currentIndex]"
+            @collapse="isShowSharePanel = false"
+          ></share-panel>
         </teleport>
       </template>
     </video-player>
@@ -55,6 +69,7 @@ import { VideoJsPlayer } from 'video.js'
 import { VideoPlayer, VideoPlayerState } from '@videojs-player/vue'
 import CoverCarousel from '@/components/CoverCarousel.vue'
 import ProgressBar from '@/components/ProgressBar.vue'
+import SharePanel from '@/components/SharePanel.vue'
 
 export interface Video {
   title: string
@@ -110,6 +125,8 @@ onActivated(() => {
   // 在 onMounted 的時候也會被呼叫，所以要確保 player.value 有值 (表示 handleMounted 被呼叫過) 之後才去執行 play()
   player.value && player.value.play()
 })
+
+const isShowSharePanel = ref(false)
 </script>
 
 <style>
