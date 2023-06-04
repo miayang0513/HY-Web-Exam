@@ -2,10 +2,10 @@
   <div id="teleport-point" class="relative">
     <cover-carousel
       ref="refCoverCarousel"
-      v-if="coverList.length > 0"
       class="relative z-10"
       v-model:currentIndex="currentIndex"
       :coverList="coverList"
+      @click="player?.pause()"
     />
     <video-player
       ref="refVideoPlayer"
@@ -17,6 +17,7 @@
       :autoplay="config.autoplay"
       :playsinline="config.playsinline"
       @mounted="handleMounted"
+      @play="hasEverPlayed = true"
     >
       <template v-slot="{ player, state }: { player: VideoJsPlayer, state: VideoPlayerState }">
         <!--
@@ -31,6 +32,17 @@
             :player="player"
             :state="state"
           />
+          <div
+            v-if="hasEverPlayed && !state.playing"
+            class="absolute top-0 left-0 z-20 w-full h-full bg-transparent"
+            @click="player.play()"
+          >
+            <button
+              class="absolute z-20 top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 px-4 py-2 rounded bg-white shadow-lg"
+            >
+              {{ '▶️ Play' }}
+            </button>
+          </div>
         </teleport>
         <div class="absolute bottom-5 w-1/2 overflow-hidden">
           <div class="whitespace-nowrap flex items-center gap-x-2 animation-marquee">
@@ -66,7 +78,7 @@ const props = defineProps<{
   videoList: Video[]
 }>()
 
-const coverList = computed(() => props.videoList?.map((video) => video.cover) || [])
+const coverList = computed(() => props.videoList.map((video) => video.cover))
 
 const config = ref<VideoPlayerProps>({
   loop: true,
@@ -77,18 +89,15 @@ const config = ref<VideoPlayerProps>({
 
 const currentIndex = ref(0)
 const sources = computed(() => [
-  /**
-   * @todo: placeholder handler
-   */
   {
     type: 'application/x-mpegURL',
-    src: props.videoList
-      ? props.videoList[currentIndex.value].play_url
-      : 'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8',
+    src: props.videoList[currentIndex.value].play_url,
   },
 ])
 
 const player = ref<VideoJsPlayer>()
+
+const hasEverPlayed = ref(false)
 const handleMounted = async (payload: any) => {
   player.value = payload.player
 }

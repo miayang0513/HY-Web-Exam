@@ -1,5 +1,5 @@
 <template>
-  <video-wrapper v-if="!isFetchingData" :videoList="videoList" />
+  <video-wrapper v-if="!isFetchingData && videoList.length > 0" :videoList="videoList" />
 </template>
 
 <script setup lang="ts">

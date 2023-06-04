@@ -10,7 +10,7 @@
       @touchend="onTouchEnd"
     >
       <div v-for="cover in coverList" :key="cover" class="w-screen" :style="{ height: mainHeight + 'px' }">
-        <img :src="cover" class="w-full h-full object-cover" :class="{ hidden: !isSwiping }" />
+        <img :src="cover" class="w-full h-full object-fill" :class="{ hidden: !isSwiping }" />
       </div>
     </div>
   </div>

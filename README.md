@@ -1,52 +1,13 @@
 # HY Web Exam
 
-### Priority of feature
+### Features
 
-- [x] Play m3u8 video
-
-  - [x] PC Chrome
-  - [x] PC Safari
-  - [x] MB Chrome
-  - [x] MB Safari
-
-- [x] Unmute
-
-  - [x] PC Chrome
-  - [x] PC Safari
-  - [x] MB Chrome
-  - [x] MB Safari
-
-- [x] Swipe the screen to switch the video
-
-  - [x] PC Chrome
-  - [ ] PC Safari (電腦版 Safari 的 RWD Mode 無法模擬觸控行為)
-  - [x] MB Chrome
-  - [x] MB Safari
-
-- [x] Transition cover between switching videos
-
-  - [x] PC Chrome
-  - [ ] PC Safari (電腦版 Safari 的 RWD Mode 無法模擬觸控行為)
-  - [x] MB Chrome
-  - [x] MB Safari
-
-- [x] Able to adjust progress of video by user
-
-  - [x] PC Chrome
-  - [x] PC Safari
-  - [x] MB Chrome
-  - [x] MB Safari
-
-- [x] Switch the pages between `following` and `for you`, and keep the same progress.
-
-  - [x] PC Chrome
-  - [x] PC Safari
-  - [x] MB Chrome
-  - [x] MB Safari
-
-- [x] Show title crawl
-
-  - [x] PC Chrome
-  - [x] PC Safari
-  - [x] MB Chrome
-  - [x] MB Safari
+| Feaurte                                                                        | PC Chrome |                     PC Safari                     | Mobile Chrome | Mobile Safari |
+| ------------------------------------------------------------------------------ | :-------: | :-----------------------------------------------: | :-----------: | :-----------: |
+| Play & Pause video                                                             |     ✓     |                         ✓                         |       ✓       |       ✓       |
+| Unmute                                                                         |     ✓     |                         ✓                         |       ✓       |       ✓       |
+| Swipe to switch video                                                          |     ✓     | x<br>(電腦版 Safari 的 RWD Mode 無法模擬觸控行為) |       ✓       |       ✓       |
+| Transition cover between switching videos                                      |     ✓     | x<br>(電腦版 Safari 的 RWD Mode 無法模擬觸控行為) |       ✓       |       ✓       |
+| Adjust progress of video by user                                               |     ✓     |                         ✓                         |       ✓       |       ✓       |
+| Switch the pages between `following` and `for you`, and keep the same progress |     ✓     |                         ✓                         |       ✓       |       ✓       |
+| Show title crawl                                                               |     ✓     |                         ✓                         |       ✓       |       ✓       |
