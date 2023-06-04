@@ -1,7 +1,7 @@
 <template>
   <nav
     v-if="$route.name !== 'Error'"
-    class="fixed z-50 top-8 left-1/2 transform -translate-x-1/2 flex items-center gap-x-3"
+    class="fixed z-nav-bar top-8 left-1/2 transform -translate-x-1/2 flex items-center gap-x-3"
   >
     <router-link to="/following" class="text-lg" :class="[$route.name === 'Following' ? activeClass : inactiveClass]"
       >Following

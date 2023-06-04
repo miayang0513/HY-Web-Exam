@@ -1,70 +1,58 @@
 <template>
   <div id="teleport-point" class="relative">
-    <cover-carousel
-      ref="refCoverCarousel"
-      class="relative z-10"
-      v-model:currentIndex="currentIndex"
-      :coverList="coverList"
-      @click="player?.pause()"
-    />
     <video-player
       ref="refVideoPlayer"
       id="video-player"
-      class="absolute z-0 top-0 left-0 w-screen h-full"
+      class="absolute z-video-player top-0 left-0 w-screen h-full"
       :sources="sources"
-      :muted="config.muted"
-      :loop="config.loop"
-      :autoplay="config.autoplay"
-      :playsinline="config.playsinline"
+      muted
+      loop
+      autoplay
+      playsInline
       @mounted="handleMounted"
       @play="hasEverPlayed = true"
     >
       <template v-slot="{ player, state }: { player: VideoJsPlayer, state: VideoPlayerState }">
-        <!--
-          最新的 state 需要透過 template slot 的方式取得，但 DOM 的層級就會小於 cover-carousel，
-          不管怎麼設 z-index 都無用，因為 video-player 本身就小於 cover-carousel 了 (z-0 < z-10)，
-          所以為了讓 progress-bar 可被點擊到，利用 teleport 的方式將 progress-bar 傳到與 cover-carousel 同層的位置
-        -->
-        <teleport v-if="state.readyState !== 0" to="#teleport-point">
-          <progress-bar
-            v-show="!isSwiping"
-            class="z-30 absolute bottom-0 left-1/2 transform -translate-x-1/2"
-            :player="player"
-            :state="state"
-          />
-          <div
-            v-if="hasEverPlayed && !state.playing"
-            class="absolute top-0 left-0 z-20 w-full h-full bg-transparent"
-            @click="player.play()"
-          >
-            <button
-              class="absolute z-20 top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 px-4 py-2 rounded bg-white shadow-lg"
-            >
-              {{ '▶️ Play' }}
-            </button>
-          </div>
-        </teleport>
-        <div class="absolute bottom-5 w-1/2 overflow-hidden">
+        <div class="absolute z-marquee bottom-5 w-1/2 overflow-hidden">
           <div class="whitespace-nowrap flex items-center gap-x-2 animation-marquee">
             <span v-for=" in 10">{{ videoList[currentIndex].title }}</span>
           </div>
         </div>
+        <!--
+          最新的 state 需要透過 template slot 的方式取得，但如果寫在這 DOM 的層級就會小於 video-player
+          所以為了讓以下的內容可以優先被被點擊到，利用 teleport 的方式將內容傳到與 video-player 同層的位置
+        -->
+        <teleport v-if="state.readyState !== 0" to="#teleport-point">
+          <cover-carousel
+            ref="refCoverCarousel"
+            class="relative z-cover-carousel"
+            v-model:currentIndex="currentIndex"
+            :coverList="coverList"
+            @click="coverCarouselClickHandler(state)"
+          />
+          <progress-bar
+            v-show="!isSwiping"
+            class="absolute z-progress-bar bottom-0 left-1/2 transform -translate-x-1/2"
+            :player="player"
+            :state="state"
+          />
+          <button
+            v-if="hasEverPlayed && !state.playing"
+            class="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 px-4 py-2 rounded bg-white shadow-lg"
+          >
+            {{ '▶️ Play' }}
+          </button>
+          <button v-if="state.muted" class="absolute px-4 py-2 rounded bg-white left-5 top-20 shadow-lg">Unmute</button>
+        </teleport>
       </template>
     </video-player>
-    <button
-      v-if="config.muted"
-      class="absolute z-20 px-4 py-2 rounded bg-white left-5 top-20 shadow-lg"
-      @click="toggleMuted"
-    >
-      Unmute
-    </button>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onActivated, onMounted } from 'vue'
 import { VideoJsPlayer } from 'video.js'
-import { VideoPlayer, VideoPlayerProps, VideoPlayerState } from '@videojs-player/vue'
+import { VideoPlayer, VideoPlayerState } from '@videojs-player/vue'
 import CoverCarousel from '@/components/CoverCarousel.vue'
 import ProgressBar from '@/components/ProgressBar.vue'
 
@@ -80,13 +68,6 @@ const props = defineProps<{
 
 const coverList = computed(() => props.videoList.map((video) => video.cover))
 
-const config = ref<VideoPlayerProps>({
-  loop: true,
-  autoplay: true,
-  muted: true,
-  playsinline: true,
-})
-
 const currentIndex = ref(0)
 const sources = computed(() => [
   {
@@ -96,18 +77,21 @@ const sources = computed(() => [
 ])
 
 const player = ref<VideoJsPlayer>()
-
 const hasEverPlayed = ref(false)
 const handleMounted = async (payload: any) => {
   player.value = payload.player
 }
 
-const toggleMuted = () => {
-  config.value.muted = !config.value.muted
-}
-
 const refCoverCarousel = ref<typeof CoverCarousel>()
 const isSwiping = computed<boolean>(() => refCoverCarousel.value?.isSwiping || false)
+const coverCarouselClickHandler = (state: VideoPlayerState) => {
+  if (state.muted) {
+    player.value?.muted(false)
+    return
+  }
+
+  state.playing ? player.value?.pause() : player.value?.play()
+}
 
 const refVideoPlayer = ref<typeof VideoPlayer>()
 
@@ -116,7 +100,7 @@ onMounted(() => {
     /**
      * @magic 待釐清
      * Object-fit: fill does not work on safari for autoplay videos
-     * 延遲設定即可解決
+     * 延遲設定即可解決，為了以防萬一底下 css 有預設 object-fit: cover
      */
     refVideoPlayer.value && (refVideoPlayer.value.$el.querySelector('video').style.objectFit = 'fill')
   }, 100)
